@@ -28,7 +28,7 @@ export default function Home() {
 
           <Text>Password</Text>
           <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} isDisabled={isOpening} isRequired />
-          <Text mb={6}>Use <Code>t36gref9u84y7f43g</Code> for Phasmophobia v0.8.0.1</Text>
+          <Text mb={6}>Use <Code>t36gref9u84y7f43g</Code> for Phasmophobia</Text>
 
           <Divider mt='5' mb='3' />
           <Heading size='md' mb='3'>Decryption</Heading>
