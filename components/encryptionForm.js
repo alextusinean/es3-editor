@@ -1,9 +1,9 @@
 import { Button, useToast } from '@chakra-ui/react';
-import { FaDownload, FaEdit } from 'react-icons/fa';
+import { FaDownload } from 'react-icons/fa';
 import { useRef, useState } from 'react';
 import crypto from 'crypto';
 
-export default function SaveFileForm({ downloader: { current: downloader }, isOpening, setIsOpening, password }) {
+export default function EncryptionForm({ downloader: { current: downloader }, isOpening, setIsOpening, password }) {
   const toast = useToast();
   const saveFileRef = useRef();
   const [data, setData] = useState(null);
@@ -34,20 +34,18 @@ export default function SaveFileForm({ downloader: { current: downloader }, isOp
       />
       <div width='100%'></div>
 
-      <Button leftIcon={<FaEdit />} colorScheme='teal' width='100%' mt='2' display='block' isDisabled>(SOON!) Open editor</Button>
-
       <Button
         leftIcon={<FaDownload />}
         colorScheme='teal'
         width='100%'
         mt='2'
         isLoading={isOpening}
-        loadingText='Decrypting the save file...'
+        loadingText='Encrypting the save file...'
         onClick={() => {
           if (!password) {
             toast({
-              title: 'Failed decrypting the save file',
-              description: 'No decryption password provided',
+              title: 'Failed encrypting the save file',
+              description: 'No encryption password provided',
               status: 'error',
               duration: 2000,
               isClosable: true,
@@ -59,7 +57,7 @@ export default function SaveFileForm({ downloader: { current: downloader }, isOp
 
           if (!data) {
             toast({
-              title: 'Failed decrypting the save file',
+              title: 'Failed encrypting the save file',
               description: 'No file chosen',
               status: 'error',
               duration: 2000,
@@ -72,16 +70,16 @@ export default function SaveFileForm({ downloader: { current: downloader }, isOp
 
           setIsOpening(true);
 
-          let decryptedData;
+          let encryptedData;
           try {
-            const iv = data.subarray(0, 16);
-            const decipher = crypto.createDecipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
-            decryptedData = Buffer.concat([decipher.update(data.subarray(16)), decipher.final()]);
+            const iv = crypto.randomBytes(16);
+            const cipher = crypto.createCipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
+            encryptedData = Buffer.concat([iv, cipher.update(data), cipher.final()]);
           } catch (e) {
             console.error(e);
             toast({
-              title: 'Failed decrypting the save file',
-              description: 'Wrong decryption password?',
+              title: 'Failed encrypting the save file',
+              description: 'Internal error',
               status: 'error',
               duration: 2500,
               isClosable: true,
@@ -95,9 +93,9 @@ export default function SaveFileForm({ downloader: { current: downloader }, isOp
           setData(null);
           saveFileRef.current.value = '';
 
-          const blobUrl = window.URL.createObjectURL(new Blob([decryptedData], { type: 'binary/octet-stream' }));
+          const blobUrl = window.URL.createObjectURL(new Blob([encryptedData], { type: 'binary/octet-stream' }));
           downloader.href = blobUrl;
-          downloader.download = 'SaveFile.decrypted.txt';
+          downloader.download = 'SaveFile.encrypted.txt';
   
           downloader.click();
           window.URL.revokeObjectURL(blobUrl);
@@ -105,7 +103,7 @@ export default function SaveFileForm({ downloader: { current: downloader }, isOp
           setIsOpening(false);
         }}
       >
-        Download decrypted save file
+        Download encrypted save file
       </Button>
     </>
   );

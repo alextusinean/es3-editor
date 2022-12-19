@@ -1,7 +1,7 @@
 import { Box, Code, Divider, Flex, Heading, Input, Text } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
-import EncryptForm from '../components/encryptForm';
-import SaveFileForm from '../components/saveFileForm';
+import DecryptionForm from '../components/decryptionForm';
+import EncryptionForm from '../components/encryptionForm';
 import Head from 'next/head';
 
 export default function Home() {
@@ -32,11 +32,11 @@ export default function Home() {
 
           <Divider mt='5' mb='3' />
           <Heading size='md' mb='3'>Decryption</Heading>
-          <SaveFileForm downloader={downloader} isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
+          <DecryptionForm downloader={downloader} isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
 
           <Divider mt='5' mb='3' />
           <Heading size='md' mb='3'>Encryption</Heading>
-          <EncryptForm downloader={downloader} isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
+          <EncryptionForm downloader={downloader} isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
         </Box>
       </Flex>
     </>
