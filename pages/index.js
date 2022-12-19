@@ -1,8 +1,8 @@
 import { Box, Code, Divider, Flex, Heading, Input, Text } from '@chakra-ui/react';
-import Head from 'next/head';
 import { useRef, useState } from 'react';
 import EncryptForm from '../components/encryptForm';
 import SaveFileForm from '../components/saveFileForm';
+import Head from 'next/head';
 
 export default function Home() {
   const downloader = useRef();

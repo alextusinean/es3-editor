@@ -1,7 +1,7 @@
 import { Button, useToast } from '@chakra-ui/react';
 import { FaDownload } from 'react-icons/fa';
-import crypto from 'crypto';
 import { useRef, useState } from 'react';
+import crypto from 'crypto';
 
 export default function EncryptForm({ downloader: { current: downloader }, isOpening, setIsOpening, password }) {
   const toast = useToast();
