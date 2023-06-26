@@ -9,6 +9,7 @@ export default function TermsOfService() {
     <>
       <Head>
         <title>Terms of Service | EasySave3 Editor</title>
+        <meta property='og:title' content='Terms of Service | EasySave3 Editor' />
         <meta property='og:url' content='https://es3.lol/terms-of-service' />
         <meta
           property='og:description'

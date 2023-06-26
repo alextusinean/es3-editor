@@ -1,6 +1,7 @@
 import { Box, Code, Divider, Flex, Heading, Input, Text, Link } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
+import Head from 'next/head';
 
 import DecryptionForm from '../components/decryptionForm';
 import EncryptionForm from '../components/encryptionForm';
@@ -20,6 +21,18 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <meta property='og:title' content={'EasySave3 Editor | Modify your favorite games\' save files!'} />
+        <meta property='og:url' content='https://es3.lol/' />
+        <meta
+          name='og:description'
+          content='EasySave3 Editor helps you empower your gaming journey with effortless save file editing. Seamlessly modify, and manage EasySave3 game saves with a user-friendly web application designed to enhance your gaming experience.'
+        />
+        <meta
+          name='description'
+          content='EasySave3 Editor helps you empower your gaming journey with effortless save file editing. Seamlessly modify, and manage EasySave3 game saves with a user-friendly web application designed to enhance your gaming experience.'
+        />
+      </Head>
       <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
         <a ref={downloader} id={'downloader'} style={{ display: 'none' }}></a>
         <Box
