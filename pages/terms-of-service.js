@@ -12,11 +12,11 @@ export default function TermsOfService() {
         <meta property='og:url' content='https://es3.lol/terms-of-service' />
         <meta
           property='og:description'
-          content='The Terms of Service govern your access to and use of EasySave3 Editor.'
+          content='The Terms of Service which govern your access to and use of EasySave3 Editor.'
         />
         <meta
           name='description'
-          content='The Terms of Service govern your access to and use of EasySave3 Editor.'
+          content='The Terms of Service which govern your access to and use of EasySave3 Editor.'
         />
       </Head>
       <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
