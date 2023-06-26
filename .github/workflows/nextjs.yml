@@ -33,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Add ads.txt
-        uses: echo "google.com, pub-9196711260336425, DIRECT, f08c47fec0942fa0" >> "${{ github.workspace }}/public/ads.txt"
+        run: echo "google.com, pub-9196711260336425, DIRECT, f08c47fec0942fa0" >> "${{ github.workspace }}/public/ads.txt"
       - name: Detect package manager
         id: detect-package-manager
         run: |
