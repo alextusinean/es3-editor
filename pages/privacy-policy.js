@@ -1,19 +1,33 @@
 import { Box, Flex, Text, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import Head from 'next/head';
 
 const Dbr = () => new Array(2, null).map((v, i) => <br key={i} />);
 
 export default function PrivacyPolicy() {
   return (
-    <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
-      <Box
-        direction='column'
-        background='gray.700'
-        rounded='6'
-        p='12'
-        position='relative'
-      >
-        <Text maxWidth='500px'>
+    <>
+      <Head>
+        <title>Privacy Policy | EasySave3 Editor</title>
+        <meta property='og:url' content='https://es3.lol/privacy-policy' />
+        <meta
+          property='og:description'
+          content='Information of our policies regarding the collection, use, and disclosure of personal information we receive from users.'
+        />
+        <meta
+          name='description'
+          content='Information of our policies regarding the collection, use, and disclosure of personal information we receive from users.'
+        />
+      </Head>
+      <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
+        <Box
+          direction='column'
+          background='gray.700'
+          rounded='6'
+          p='12'
+          position='relative'
+        >
+          <Text maxWidth='500px'>
 Privacy Policy for <Link as={NextLink} href='/' color='blue.500'>EasySave3 Editor</Link><Dbr />
 
 Effective date: 26 June 2023<Dbr />
@@ -34,8 +48,9 @@ This Privacy Policy is effective as of the date stated above and will remain in 
 
 5. Contact Us<br />
 If you have any questions or concerns about this Privacy Policy or the EasySave3 Editor Web Application, please contact Alex Tușinean at <Link as={NextLink} href='mailto:alex@tusinean.ro' color='blue.500'>alex@tusinean.ro</Link>.
-        </Text>
-      </Box>
-    </Flex>
+          </Text>
+        </Box>
+      </Flex>
+    </>
   );
 }

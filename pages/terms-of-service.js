@@ -1,19 +1,33 @@
 import { Box, Flex, Text, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import Head from 'next/head';
 
 const Dbr = () => new Array(2, null).map((v, i) => <br key={i} />);
 
 export default function TermsOfService() {
   return (
-    <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
-      <Box
-        direction='column'
-        background='gray.700'
-        rounded='6'
-        p='12'
-        position='relative'
-      >
-        <Text maxWidth='500px'>
+    <>
+      <Head>
+        <title>Terms of Service | EasySave3 Editor</title>
+        <meta property='og:url' content='https://es3.lol/terms-of-service' />
+        <meta
+          property='og:description'
+          content='The Terms of Service govern your access to and use of EasySave3 Editor.'
+        />
+        <meta
+          name='description'
+          content='The Terms of Service govern your access to and use of EasySave3 Editor.'
+        />
+      </Head>
+      <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
+        <Box
+          direction='column'
+          background='gray.700'
+          rounded='6'
+          p='12'
+          position='relative'
+        >
+          <Text maxWidth='500px'>
 Terms of Service for <Link as={NextLink} href='/' color='blue.500'>EasySave3 Editor</Link><Dbr />
 
 Effective date: 26 June 2023<Dbr />
@@ -47,8 +61,9 @@ Please note that the EasySave3 Editor Web Application is developed by Alex Tuși
 
 7. Contact Information<br />
 If you have any questions or concerns regarding these Terms or the EasySave3 Editor Web Application, you can contact Alex Tușinean at <Link as={NextLink} href='mailto:alex@tusinean.ro' color='blue.500'>alex@tusinean.ro</Link>.
-        </Text>
-      </Box>
-    </Flex>
+          </Text>
+        </Box>
+      </Flex>
+    </>
   );
 }
