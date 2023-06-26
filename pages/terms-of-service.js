@@ -1,5 +1,5 @@
 import { Box, Flex, Text, Link } from '@chakra-ui/react';
-import NextLink from 'next/link'
+import NextLink from 'next/link';
 
 const Dbr = () => new Array(2, null).map((v, i) => <br key={i} />);
 
