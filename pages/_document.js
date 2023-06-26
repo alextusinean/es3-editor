@@ -1,5 +1,5 @@
 import { ColorModeScript } from '@chakra-ui/react';
-import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
+import NextDocument, { Html, Main, Head, NextScript } from 'next/document';
 import Script from 'next/script';
 
 export default class Document extends NextDocument {
@@ -7,17 +7,20 @@ export default class Document extends NextDocument {
     return (
       <Html lang='en'>
         <Head>
-          {/* please remove/change these two scripts if you're launching your own instance */}
-          <Script strategy='beforeInteractive' src='https://www.googletagmanager.com/gtag/js?id=G-X7X0P5WB4F' />
-          <Script id='google-analytics-initialize' strategy='beforeInteractive'>
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
+          {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && [
+            <Script key='google-analytics-script' strategy='beforeInteractive'
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}
+            />,
+            <Script key='google-analytics-initialize' id='google-analytics-initializer' strategy='beforeInteractive'>
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
 
-              gtag('config', 'G-X7X0P5WB4F');
-            `}
-          </Script>
+                gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}');
+              `}
+            </Script>
+          ]}
         </Head>
         <body>
           <ColorModeScript initialColorMode='dark' />
