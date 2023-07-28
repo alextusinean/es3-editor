@@ -56,9 +56,9 @@ export default function Home() {
               <Text mt='5'>If you are getting no errors after pressing the button</Text>
               <Text>and the decrypted file starts downloading, it means that the</Text>
               <Text>decryption was successful. For some games, the decrypted</Text>
-              <Text>save file might look like it's still encrypted, but</Text>
+              <Text>save file might look like it&apos;s still encrypted, but</Text>
               <Text>it can actually just be GZip compression. So, if your</Text>
-              <Text>decrypted file still looks like it's encrypted, please</Text>
+              <Text>decrypted file still looks like it&apos;s encrypted, please</Text>
               <Text>try decompressing it with GZip.</Text>
 
               <Divider mt='5' mb='3' />
