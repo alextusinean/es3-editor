@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Alert, AlertIcon, AlertTitle, AlertDescription, Link, Box } from '@chakra-ui/react';
 import Head from 'next/head';
 
 export default function App({ Component, pageProps }) {
@@ -16,6 +16,19 @@ export default function App({ Component, pageProps }) {
       </Head>
 
       <ChakraProvider>
+        <Box position='fixed' zIndex='9999' width='100%' top='0'>
+          <Alert
+            status='info'
+            alignItems='center'
+            justifyContent='center'
+            textAlign='center'
+            variant='solid'
+          >
+            <AlertIcon />
+            <AlertTitle>This tool is free to use!</AlertTitle>
+            <AlertDescription>Consider showing some love to the developer: <Link href='https://paypal.me/tusinean' color='blue'>PayPal</Link></AlertDescription>
+          </Alert>
+        </Box>
         <Component {...pageProps} />
       </ChakraProvider>
     </>
