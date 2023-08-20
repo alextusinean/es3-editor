@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }) {
           >
             <AlertIcon />
             <AlertTitle>This tool is free to use!</AlertTitle>
-            <AlertDescription>Consider showing some love to the developer: <Link href='https://paypal.me/tusinean' color='blue'>PayPal</Link></AlertDescription>
+            <AlertDescription>Consider showing some love to the developer: <Link href='https://paypal.me/tusinean' color='blue' isExternal>PayPal</Link></AlertDescription>
           </Alert>
         </Box>
         <Component {...pageProps} />
