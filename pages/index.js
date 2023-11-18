@@ -47,6 +47,7 @@ export default function Home() {
               <Text>Password</Text>
               <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} isDisabled={isOpening} isRequired />
               <Text>Use <Code>t36gref9u84y7f43g</Code> for Phasmophobia</Text>
+              <Text>Use <Code>lcslime14a5</Code> for Lethal Company</Text>
               <Text>Use <Code>6tr cr$#@%T#GFTVn</Code> for Strike Force Heroes</Text>
               <Text mb={6}>Use <Code>browar23</Code> for Brewpub Simulator</Text>
 
