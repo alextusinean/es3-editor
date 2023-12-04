@@ -49,7 +49,9 @@ export default function Home() {
               <Text>Use <Code>t36gref9u84y7f43g</Code> for Phasmophobia</Text>
               <Text>Use <Code>lcslime14a5</Code> for Lethal Company</Text>
               <Text>Use <Code>6tr cr$#@%T#GFTVn</Code> for Strike Force Heroes</Text>
-              <Text mb={6}>Use <Code>browar23</Code> for Brewpub Simulator</Text>
+              <Text>Use <Code>browar23</Code> for Brewpub Simulator</Text>
+              <Text>Use <Code>wanzg!1f**k</Code> for DOJO NTR</Text>
+              <Text mb={6}>Use <Code>VSPassword1</Code> for Virtual Succubus</Text>
 
               <Divider mt='5' mb='3' />
               <Heading size='md' mb='3'>Decryption</Heading>
