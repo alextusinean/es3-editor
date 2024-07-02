@@ -15,8 +15,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  IconButton
 } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
@@ -64,7 +66,16 @@ export default function Home() {
               <Heading mb='6'>EasySave3 Editor</Heading>
 
               <Text>Password</Text>
-              <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} disabled={isLoading} isRequired />
+              <Box display='flex' flexDirection='row'>
+                <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} disabled={isLoading} />
+                <IconButton
+                  ml='3'
+                  variant='outline'
+                  colorScheme='red'
+                  icon={<CloseIcon />}
+                  onClick={() => setPassword('')}
+                />
+              </Box>
               <Text mt='2'>Don&apos;t know the password for your game?</Text>
               <Text>Check if it is already known below.</Text>
               <Button mt='2' colorScheme='teal' onClick={onOpen}>Known game passwords</Button>
