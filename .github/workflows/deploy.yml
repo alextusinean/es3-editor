@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   build:
-    uses: ./.github/workflows/nextjs.yml@main
+    uses: ./.github/workflows/nextjs.yml
     with:
       should-upload-artifact: true
 
