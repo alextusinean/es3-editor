@@ -52,7 +52,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
     const downloader = document.getElementById('downloader');
     downloader.click();
     window.URL.revokeObjectURL(downloader.href);
-  }
+  };
 
   return (
     <>
@@ -64,7 +64,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           onChange={changeEvent => {
             if (!changeEvent.target.files.length)
               return;
-            
+
             const fileReader = new FileReader();
             fileReader.onload = loadEvent => setData(Buffer.from(loadEvent.target.result));
             fileReader.onerror = e => {

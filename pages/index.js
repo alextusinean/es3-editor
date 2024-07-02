@@ -77,7 +77,7 @@ export default function Home() {
           <CryptForm isLoading={isLoading} setIsLoading={setIsLoading} password={password} />
           <Text mt='5'>Some games might not encrypt their save files and</Text>
           <Text>only compress them using GZip. In this case, you</Text>
-          <Text>don't have to provide a password.</Text>
+          <Text>don&apos;t have to provide a password.</Text>
 
           <Divider mt='5' mb='3' />
           <Heading size='md' mb='3'>Encryption</Heading>
