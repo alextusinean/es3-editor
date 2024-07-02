@@ -1,9 +1,9 @@
 import { Button, useToast } from '@chakra-ui/react';
-import { FaDownload } from 'react-icons/fa';
+import { FaDownload, FaEdit } from 'react-icons/fa';
 import { useRef, useState } from 'react';
 import crypto from 'crypto';
 
-export default function EncryptionForm({ downloader: { current: downloader }, isOpening, setIsOpening, password }) {
+export default function CryptForm({ isEncryption, isOpening, setIsOpening, password }) {
   const toast = useToast();
   const saveFileRef = useRef();
   const [data, setData] = useState(null);
@@ -34,52 +34,54 @@ export default function EncryptionForm({ downloader: { current: downloader }, is
       />
       <div width='100%'></div>
 
+      {!isEncryption && (
+        <Button leftIcon={<FaEdit />} colorScheme='teal' width='100%' mt='2' display='block' isDisabled>(SOON!) Open editor</Button>
+      )}
+
       <Button
         leftIcon={<FaDownload />}
         colorScheme='teal'
         width='100%'
         mt='2'
         isLoading={isOpening}
-        loadingText='Encrypting the save file...'
+        loadingText={`${isEncryption ? 'Encrypting' : 'Decrypting'} the save file...`}
         onClick={() => {
-          if (!password) {
+          if (!password || !data) {
             toast({
-              title: 'Failed encrypting the save file',
-              description: 'No encryption password provided',
+              title: `Failed ${isEncryption ? 'encrypting' : 'decrypting'} the save file`,
+              description: !password ? 'No password provided' : 'No file chosen',
               status: 'error',
               duration: 2000,
               isClosable: true,
               position: 'bottom-left'
             });
 
-            return;
-          }
-
-          if (!data) {
-            toast({
-              title: 'Failed encrypting the save file',
-              description: 'No file chosen',
-              status: 'error',
-              duration: 2000,
-              isClosable: true,
-              position: 'bottom-left'
-            });
-            
             return;
           }
 
           setIsOpening(true);
 
-          let encryptedData;
+          let fileName;
+          let cryptedData;
           try {
-            const iv = crypto.randomBytes(16);
-            const cipher = crypto.createCipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
-            encryptedData = Buffer.concat([iv, cipher.update(data), cipher.final()]);
+            if (isEncryption) {
+              fileName = 'SaveFile.encrypted.txt';
+
+              const iv = crypto.randomBytes(16);
+              const cipher = crypto.createCipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
+              cryptedData = Buffer.concat([iv, cipher.update(data), cipher.final()]);
+            } else {
+              fileName = 'SaveFile.decrypted.txt';
+
+              const iv = data.subarray(0, 16);
+              const decipher = crypto.createDecipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
+              cryptedData = Buffer.concat([decipher.update(data.subarray(16)), decipher.final()]);
+            }
           } catch (e) {
             console.error(e);
             toast({
-              title: 'Failed encrypting the save file',
-              description: 'Internal error',
+              title: `Failed ${isEncryption ? 'encrypting' : 'decrypting'} the save file`,
+              description: isEncryption ? 'Internal error' : 'Wrong decryption password?',
               status: 'error',
               duration: 2500,
               isClosable: true,
@@ -93,9 +95,10 @@ export default function EncryptionForm({ downloader: { current: downloader }, is
           setData(null);
           saveFileRef.current.value = '';
 
-          const blobUrl = window.URL.createObjectURL(new Blob([encryptedData], { type: 'binary/octet-stream' }));
+          const blobUrl = window.URL.createObjectURL(new Blob([cryptedData], { type: 'binary/octet-stream' }));
+          const downloader = document.getElementById('downloader');
           downloader.href = blobUrl;
-          downloader.download = 'SaveFile.encrypted.txt';
+          downloader.download = fileName;
   
           downloader.click();
           window.URL.revokeObjectURL(blobUrl);
@@ -103,7 +106,7 @@ export default function EncryptionForm({ downloader: { current: downloader }, is
           setIsOpening(false);
         }}
       >
-        Download encrypted save file
+        Download {isEncryption ? 'encrypted' : 'decrypted'} save file
       </Button>
     </>
   );

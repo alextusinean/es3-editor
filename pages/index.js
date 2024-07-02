@@ -1,19 +1,18 @@
 import { Box, Code, Divider, Flex, Heading, Input, Text, Link } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
 
-import DecryptionForm from '../components/decryptionForm';
-import EncryptionForm from '../components/encryptionForm';
+import CryptForm from '../components/cryptForm';
 
 export default function Home() {
-  const downloader = useRef();
   const [isOpening, setIsOpening] = useState(false);
   const [password, setPassword] = useState('');
   const [currentYear, setCurrentYear] = useState('');
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
+    window.downloader = document.getElementById('downloader');
   }, []);
 
   return (
@@ -33,8 +32,8 @@ export default function Home() {
 
       {currentYear && (
         <>
+          <a id='downloader' style={{ display: 'none' }}></a>
           <Flex alignItems='center' justifyContent='center' mt='24' mb='14'>
-            <a ref={downloader} id={'downloader'} style={{ display: 'none' }}></a>
             <Box
               direction='column'
               background='gray.700'
@@ -55,7 +54,7 @@ export default function Home() {
 
               <Divider mt='5' mb='3' />
               <Heading size='md' mb='3'>Decryption</Heading>
-              <DecryptionForm downloader={downloader} isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
+              <CryptForm isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
               <Text mt='5'>If you are getting no errors after pressing the button</Text>
               <Text>and the decrypted file starts downloading, it means that the</Text>
               <Text>decryption was successful. For some games, the decrypted</Text>
@@ -66,7 +65,7 @@ export default function Home() {
 
               <Divider mt='5' mb='3' />
               <Heading size='md' mb='3'>Encryption</Heading>
-              <EncryptionForm downloader={downloader} isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
+              <CryptForm isOpening={isOpening} setIsOpening={setIsOpening} password={password} isEncryption />
               <Text mt='5'>If you had to decompress the save file after decryption,</Text>
               <Text>you will have to recompress it again before uploading it here</Text>
               <Text>and encrypt it again.</Text>
