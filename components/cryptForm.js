@@ -213,7 +213,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
             {isEncryptionWarning ? (
               <Text>
                 You should only check this box if you were warned that the save file was GUnZipped too when you decrypted it.
-                If you GZip a save file that isn't supposed to be GZipped, the game might not recognize it and might delete it.
+                If you GZip a save file that isn&apos;t supposed to be GZipped, the game might not recognize it and might delete it.
               </Text>
             ) : (
               <Text>
