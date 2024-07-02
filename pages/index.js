@@ -24,6 +24,7 @@ import NextLink from 'next/link';
 import Head from 'next/head';
 
 import CryptForm from '../components/cryptForm';
+import Footer from '../components/footer';
 import passwords from '../passwords';
 
 export default function Home() {
@@ -85,11 +86,7 @@ export default function Home() {
         </Box>
       </Flex>
 
-      <Box position='fixed' bottom='5px' right='5px' textAlign='right'>
-        <Link as={NextLink} href='/terms-of-service' color='blue.500' mr='6.5px'>Terms of Service</Link>
-        <Link as={NextLink} href='/privacy-policy' color='blue.500'>Privacy Policy</Link>
-        <Text>Made with <span style={{ color: 'red' }}>♥</span> by <Link as={NextLink} href='https://alex.tusinean.ro' color='blue.500'>Alex Tușinean</Link></Text>
-      </Box>
+      <Footer />
 
       <Modal
         blockScrollOnMount={false}

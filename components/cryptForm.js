@@ -15,7 +15,10 @@ import {
 } from '@chakra-ui/react';
 import { FaDownload, FaEdit } from 'react-icons/fa';
 import { useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import crypto from 'crypto';
+
+const Editor = dynamic(() => import('./editor'), { ssr: false });
 
 function isGzip(data) {
   return data[0] == 0x1F && data[1] == 0x8B;
@@ -45,6 +48,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
   const [shouldGzip, setShouldGzip] = useState(false);
   const [isEncryptionWarning, setIsEncryptionWarning] = useState(false);
   const { isOpen, onOpen: _onOpen, onClose: _onClose } = useDisclosure();
+  const { isOpen: isEditorOpen, onOpen: onEditorOpen, onClose: onEditorClose } = useDisclosure();
 
   const onOpen = (encryption) => {
     if (encryption)
@@ -113,7 +117,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
       <div width='100%'></div>
 
       {!isEncryption && (
-        <Button leftIcon={<FaEdit />} colorScheme='teal' width='100%' mt='2' display='block' isDisabled>(SOON!) Open editor</Button>
+        <Button leftIcon={<FaEdit />} colorScheme='teal' width='100%' mt='2' display='block' onClick={onEditorOpen}>Open editor</Button>
       )}
 
       <Button
@@ -241,6 +245,10 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {!isEncryption && (
+        <Editor isOpen={isEditorOpen} onClose={onEditorClose} />
+      )}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { ChakraProvider, Alert, AlertIcon, AlertTitle, AlertDescription, Link, Box } from '@chakra-ui/react';
 import Head from 'next/head';
+import './editor.css';
 
 export default function App({ Component, pageProps }) {
   return (
