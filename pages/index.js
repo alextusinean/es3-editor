@@ -25,7 +25,7 @@ import CryptForm from '../components/cryptForm';
 import passwords from '../passwords';
 
 export default function Home() {
-  const [isOpening, setIsOpening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState('');
   const [currentYear, setCurrentYear] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,28 +64,21 @@ export default function Home() {
               <Heading mb='6'>EasySave3 Editor</Heading>
 
               <Text>Password</Text>
-              <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} isDisabled={isOpening} isRequired />
+              <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} disabled={isLoading} isRequired />
               <Text mt='2'>Don&apos;t know the password for your game?</Text>
               <Text>Check if it is already known below.</Text>
               <Button mt='2' colorScheme='teal' onClick={onOpen}>Known game passwords</Button>
 
               <Divider mt='8' mb='3' />
               <Heading size='md' mb='3'>Decryption</Heading>
-              <CryptForm isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
-              <Text mt='5'>If you are getting no errors after pressing the button</Text>
-              <Text>and the decrypted file starts downloading, it means that the</Text>
-              <Text>decryption was successful. For some games, the decrypted</Text>
-              <Text>save file might look like it&apos;s still encrypted, but</Text>
-              <Text>it can actually just be GZip compression. So, if your</Text>
-              <Text>decrypted file still looks like it&apos;s encrypted, please</Text>
-              <Text>try decompressing it with GZip.</Text>
+              <CryptForm isLoading={isLoading} setIsLoading={setIsLoading} password={password} />
+              <Text mt='5'>Some games might not encrypt their save files and</Text>
+              <Text>only compress them using GZip. In this case, you</Text>
+              <Text>don't have to provide a password.</Text>
 
               <Divider mt='5' mb='3' />
               <Heading size='md' mb='3'>Encryption</Heading>
-              <CryptForm isOpening={isOpening} setIsOpening={setIsOpening} password={password} isEncryption />
-              <Text mt='5'>If you had to decompress the save file after decryption,</Text>
-              <Text>you will have to recompress it again before uploading it here</Text>
-              <Text>and encrypt it again.</Text>
+              <CryptForm isLoading={isLoading} setIsLoading={setIsLoading} password={password} isEncryption />
             </Box>
           </Flex>
 
@@ -123,6 +116,8 @@ export default function Home() {
                     </Box>
                   </Box>
                 ))}
+                <Text mt='5'>Can&apos;t find your game here?</Text>
+                <Text>Try decrypting it without a password.</Text>
               </ModalBody>
 
               <ModalFooter>
