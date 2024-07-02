@@ -43,7 +43,20 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
   const saveFileRef = useRef();
   const [data, setData] = useState(null);
   const [shouldGzip, setShouldGzip] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isEncryptionWarning, setIsEncryptionWarning] = useState(false);
+  const { isOpen, onOpen: _onOpen, onClose: _onClose } = useDisclosure();
+
+  const onOpen = (encryption) => {
+    if (encryption)
+      setIsEncryptionWarning(true);
+
+    _onOpen();
+  };
+
+  const onClose = () => {
+    _onClose();
+    setIsEncryptionWarning(false);
+  };
 
   const download = () => {
     setData(null);
@@ -82,7 +95,20 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
             fileReader.readAsArrayBuffer(changeEvent.target.files[0]);
           }}
         />
-        {isEncryption && <Checkbox disabled={isLoading} isChecked={shouldGzip} onChange={e => setShouldGzip(e.target.checked)}>GZip</Checkbox>}
+        {isEncryption && (
+          <Checkbox
+            disabled={isLoading}
+            isChecked={shouldGzip}
+            onChange={e => {
+              if (!e.target.checked)
+                setShouldGzip(false);
+              else
+                onOpen(true);
+            }}
+          >
+            GZip
+          </Checkbox>
+        )}
       </Box>
       <div width='100%'></div>
 
@@ -184,22 +210,33 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           <ModalHeader color='orange'>Warning!</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>
-              Your save file was also GUnZipped (decompressed). This means that when you are done editing your save file
-              and want to re-encrypt it, you will have to check the GZip checkbox before so the file can also be re-compressed.
-              Unless you check the box, the save file might not be recognized by the game and might be deleted.
-            </Text>
+            {isEncryptionWarning ? (
+              <Text>
+                You should only check this box if you were warned that the save file was GUnZipped too when you decrypted it.
+                If you GZip a save file that isn't supposed to be GZipped, the game might not recognize it and might delete it.
+              </Text>
+            ) : (
+              <Text>
+                Your save file was also GUnZipped (decompressed). This means that when you are done editing your save file
+                and want to re-encrypt it, you will have to check the GZip checkbox before so the file can also be re-compressed.
+                Unless you check the box, the save file might not be recognized by the game and might be deleted.
+              </Text>
+            )}
           </ModalBody>
 
           <ModalFooter>
             <Button
               colorScheme='teal'
               onClick={() => {
-                download();
+                if (isEncryptionWarning)
+                  setShouldGzip(true);
+                else
+                  download();
+
                 onClose();
               }}
             >
-              Ok, proceed to download
+              Ok, proceed{!isEncryptionWarning ? ' with download' : ''}
             </Button>
           </ModalFooter>
         </ModalContent>
