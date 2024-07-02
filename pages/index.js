@@ -1,14 +1,34 @@
-import { Box, Code, Divider, Flex, Heading, Input, Text, Link } from '@chakra-ui/react';
+import {
+  Box,
+  Code,
+  Divider,
+  Flex,
+  Heading,
+  Input,
+  Text,
+  Link,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
 
 import CryptForm from '../components/cryptForm';
+import passwords from '../passwords';
 
 export default function Home() {
   const [isOpening, setIsOpening] = useState(false);
   const [password, setPassword] = useState('');
   const [currentYear, setCurrentYear] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
@@ -45,14 +65,11 @@ export default function Home() {
 
               <Text>Password</Text>
               <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} isDisabled={isOpening} isRequired />
-              <Text>Use <Code>t36gref9u84y7f43g</Code> for Phasmophobia</Text>
-              <Text>Use <Code>lcslime14a5</Code> for Lethal Company</Text>
-              <Text>Use <Code>6tr cr$#@%T#GFTVn</Code> for Strike Force Heroes</Text>
-              <Text>Use <Code>browar23</Code> for Brewpub Simulator</Text>
-              <Text>Use <Code>wanzg!1f**k</Code> for DOJO NTR</Text>
-              <Text mb={6}>Use <Code>VSPassword1</Code> for Virtual Succubus</Text>
+              <Text mt='2'>Don't know the password for your game?</Text>
+              <Text>Check if it is already known below.</Text>
+              <Button mt='2' colorScheme='teal' onClick={onOpen}>Known game passwords</Button>
 
-              <Divider mt='5' mb='3' />
+              <Divider mt='8' mb='3' />
               <Heading size='md' mb='3'>Decryption</Heading>
               <CryptForm isOpening={isOpening} setIsOpening={setIsOpening} password={password} />
               <Text mt='5'>If you are getting no errors after pressing the button</Text>
@@ -77,6 +94,44 @@ export default function Home() {
             <Link as={NextLink} href='/privacy-policy' color='blue.500'>Privacy Policy</Link>
             <Text>Copyright © {currentYear} <Link as={NextLink} href='https://alex.tusinean.ro' color='blue.500'>Alex Tușinean</Link></Text>
           </Box>
+
+          <Modal
+            blockScrollOnMount={false}
+            isOpen={isOpen} onClose={onClose}
+            scrollBehavior='inside' isCentered
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Known game passwords</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {passwords.map(({ gameName, password }, index) => (
+                  <Box key={index}>
+                    {index !== 0 && <Divider my='2' />}
+                    <Box display='flex' flexDirection='row' alignItems='center'>
+                      <Code>{password}</Code>
+                      <Text ml='auto'>{gameName}</Text>
+                      <Button
+                        ml='3' colorScheme='teal'
+                        onClick={() => {
+                          setPassword(password);
+                          onClose();
+                        }}
+                      >
+                        Use
+                      </Button>
+                    </Box>
+                  </Box>
+                ))}
+              </ModalBody>
+
+              <ModalFooter>
+                <Button onClick={onClose}>
+                  Ok
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </>
       )}
     </>
