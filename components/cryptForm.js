@@ -85,6 +85,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
   const [data, setData] = useState(null);
   const [editorData, setEditorData] = useState(null);
   const [shouldGzip, setShouldGzip] = useState(false);
+  const [lastFileName, setLastFileName] = useState(null);
   const [isEncryptionWarning, setIsEncryptionWarning] = useState(false);
   const { isOpen, onOpen: _onOpen, onClose: _onClose } = useDisclosure();
   const { isOpen: isEditorOpen, onOpen: onEditorOpen, onClose: onEditorClose } = useDisclosure();
@@ -125,7 +126,8 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           ref={saveFileRef}
           disabled={isLoading}
           onChange={changeEvent => {
-            if (!changeEvent.target.files.length) {
+            const files = changeEvent.target.files;
+            if (!files.length) {
               setData(null);
               return;
             }
@@ -144,7 +146,9 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
               });
             };
 
-            fileReader.readAsArrayBuffer(changeEvent.target.files[0]);
+            const file = files[0];
+            setLastFileName(file.name);
+            fileReader.readAsArrayBuffer(file);
           }}
         />
         {isEncryption && (
@@ -362,7 +366,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
               return false;
             }
 
-            setDownloadData(cryptedData, 'SaveFile.encrypted.txt');
+            setDownloadData(cryptedData, lastFileName);
             download();
             return true;
           }}
