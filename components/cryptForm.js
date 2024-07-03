@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Text,
+  Link,
   Checkbox,
   useToast,
   Modal,
@@ -16,12 +17,22 @@ import {
 import { FaDownload, FaEdit } from 'react-icons/fa';
 import { useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import NextLink from 'next/link';
 import crypto from 'crypto';
 
 const Editor = dynamic(() => import('./editor'), { ssr: false });
 
 function isGzip(data) {
   return data[0] == 0x1F && data[1] == 0x8B;
+}
+
+function isJSON(data) {
+  try {
+    JSON.parse(data.toString());
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
 async function pipeThrough(data, stream) {
@@ -41,10 +52,38 @@ async function pipeThrough(data, stream) {
   return piped;
 }
 
+async function cryptData(data, password, isEncryption, shouldGzip) {
+  let wasGunzipped = false;
+  if (isEncryption) {
+    if (shouldGzip)
+      data = await pipeThrough(data, new CompressionStream('gzip'));
+
+    if (password) {
+      const iv = crypto.randomBytes(16);
+      const cipher = crypto.createCipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
+      data = Buffer.concat([iv, cipher.update(data), cipher.final()]);
+    }
+  } else {
+    if (password) {
+      const iv = data.subarray(0, 16);
+      const decipher = crypto.createDecipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
+      data = Buffer.concat([decipher.update(data.subarray(16)), decipher.final()]);
+    }
+
+    if (isGzip(data)) {
+      wasGunzipped = true;
+      data = await pipeThrough(data, new DecompressionStream('gzip'));
+    }
+  }
+
+  return { wasGunzipped, cryptedData: data };
+}
+
 export default function CryptForm({ isEncryption, isLoading, setIsLoading, password }) {
   const toast = useToast();
   const saveFileRef = useRef();
   const [data, setData] = useState(null);
+  const [editorData, setEditorData] = useState(null);
   const [shouldGzip, setShouldGzip] = useState(false);
   const [isEncryptionWarning, setIsEncryptionWarning] = useState(false);
   const { isOpen, onOpen: _onOpen, onClose: _onClose } = useDisclosure();
@@ -60,6 +99,13 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
   const onClose = () => {
     _onClose();
     setIsEncryptionWarning(false);
+  };
+
+  const setDownloadData = (data, fileName) => {
+    const blobUrl = window.URL.createObjectURL(new Blob([data], { type: 'binary/octet-stream' }));
+    const downloader = document.getElementById('downloader');
+    downloader.href = blobUrl;
+    downloader.download = fileName;
   };
 
   const download = () => {
@@ -79,8 +125,10 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           ref={saveFileRef}
           disabled={isLoading}
           onChange={changeEvent => {
-            if (!changeEvent.target.files.length)
+            if (!changeEvent.target.files.length) {
+              setData(null);
               return;
+            }
 
             const fileReader = new FileReader();
             fileReader.onload = loadEvent => setData(Buffer.from(loadEvent.target.result));
@@ -117,7 +165,74 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
       <div width='100%'></div>
 
       {!isEncryption && (
-        <Button leftIcon={<FaEdit />} colorScheme='teal' width='100%' mt='2' display='block' onClick={onEditorOpen}>Open editor</Button>
+        <Button
+          leftIcon={<FaEdit />}
+          colorScheme='orange'
+          width='100%' mt='2'
+          display='block'
+          onClick={async () => {
+            if (!data || (!password && !isGzip(data) && !isJSON(data))) {
+              toast({
+                title: `Failed ${isEncryption ? 'encrypting' : 'decrypting'} the save file`,
+                description: !data ? 'No file chosen' : 'No password provided',
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+                position: 'bottom-left'
+              });
+  
+              return;
+            }
+
+            setIsLoading(true);
+
+            let decryptedData;
+            try {
+              decryptedData = await cryptData(data, password, false);
+            } catch (e) {
+              console.error(e);
+              toast({
+                title: 'Failed decrypting the save file',
+                description: 'Wrong decryption password? Try leaving the password field empty.',
+                status: 'error',
+                duration: 3500,
+                isClosable: true,
+                position: 'bottom-left'
+              });
+              
+              setIsLoading(false);
+              return;
+            }
+
+            if (!isJSON(decryptedData.cryptedData)) {
+              toast({
+                title: 'Can\'t open editor',
+                description: (
+                  <>
+                    <Text>The save file isn&apos;t JSON formatted.</Text>
+                    <Text>Please open an issue on GitHub:</Text>
+                    <Link as={NextLink} href='https://github.com/alextusinean/es3-editor/issues/new' color='blue.500'>
+                      https://github.com/alextusinean/es3-editor
+                    </Link>
+                  </>
+                ),
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom-left'
+              });
+              
+              setIsLoading(false);
+              return;
+            }
+
+            setEditorData({ wasGunzipped: decryptedData.wasGunzipped, data: decryptedData.cryptedData });
+            onEditorOpen();
+            setIsLoading(false);
+          }}
+        >
+          EXPERIMENTAL! Open editor
+        </Button>
       )}
 
       <Button
@@ -144,35 +259,13 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           
           setIsLoading(true);
 
-          let fileName;
-          let cryptedData = data;
+          let fileName = isEncryption ? 'SaveFile.encrypted.txt' : 'SaveFile.decrypted.txt';
           let wasGunzipped = false;
+          let cryptedData;
           try {
-            if (isEncryption) {
-              fileName = 'SaveFile.encrypted.txt';
-
-              if (shouldGzip)
-                cryptedData = await pipeThrough(cryptedData, new CompressionStream('gzip'));
-
-              if (password) {
-                const iv = crypto.randomBytes(16);
-                const cipher = crypto.createCipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
-                cryptedData = Buffer.concat([iv, cipher.update(cryptedData), cipher.final()]);
-              }
-            } else {
-              fileName = 'SaveFile.decrypted.txt';
-
-              if (password) {
-                const iv = cryptedData.subarray(0, 16);
-                const decipher = crypto.createDecipheriv('aes-128-cbc', crypto.pbkdf2Sync(password, iv, 100, 16, 'sha1'), iv);
-                cryptedData = Buffer.concat([decipher.update(cryptedData.subarray(16)), decipher.final()]);
-              }
-
-              if (isGzip(cryptedData)) {
-                wasGunzipped = true;
-                cryptedData = await pipeThrough(cryptedData, new DecompressionStream('gzip'));
-              }
-            }
+            let result = await cryptData(data, password, isEncryption, shouldGzip);
+            wasGunzipped = result.wasGunzipped;
+            cryptedData = result.cryptedData;
           } catch (e) {
             console.error(e);
             toast({
@@ -188,11 +281,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
             return;
           }
 
-          const blobUrl = window.URL.createObjectURL(new Blob([cryptedData], { type: 'binary/octet-stream' }));
-          const downloader = document.getElementById('downloader');
-          downloader.href = blobUrl;
-          downloader.download = fileName;
-  
+          setDownloadData(cryptedData, fileName);
           if (wasGunzipped)
             onOpen();
           else
@@ -247,7 +336,37 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
       </Modal>
 
       {!isEncryption && (
-        <Editor isOpen={isEditorOpen} onClose={onEditorClose} />
+        <Editor
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          isOpen={isEditorOpen}
+          onClose={onEditorClose}
+          data={editorData}
+          setData={setEditorData}
+          saveData={async () => {
+            let cryptedData;
+            try {
+              let result = await cryptData(editorData.data, password, true, editorData.wasGunzipped);
+              cryptedData = result.cryptedData;
+            } catch (e) {
+              console.error(e);
+              toast({
+                title: `Failed encrypting the edited save file`,
+                description: 'Internal error',
+                status: 'error',
+                duration: 3500,
+                isClosable: true,
+                position: 'bottom-left'
+              });
+
+              return false;
+            }
+
+            setDownloadData(cryptedData, 'SaveFile.encrypted.txt');
+            download();
+            return true;
+          }}
+        />
       )}
     </>
   );

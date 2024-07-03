@@ -6,7 +6,6 @@ import {
   Heading,
   Input,
   Text,
-  Link,
   Button,
   Modal,
   ModalOverlay,
@@ -20,7 +19,6 @@ import {
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-import NextLink from 'next/link';
 import Head from 'next/head';
 
 import CryptForm from '../components/cryptForm';
