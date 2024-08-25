@@ -214,10 +214,7 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
                 description: (
                   <>
                     <Text>The save file isn&apos;t JSON formatted.</Text>
-                    <Text>Please open an issue on GitHub:</Text>
-                    <Link as={NextLink} href='https://github.com/alextusinean/es3-editor/issues/new' color='blue.500'>
-                      https://github.com/alextusinean/es3-editor
-                    </Link>
+                    <Text>Download the file and edit it manually.</Text>
                   </>
                 ),
                 status: 'error',
