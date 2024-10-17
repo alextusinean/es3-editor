@@ -58,18 +58,43 @@ export default function Home() {
 
           <Text>Password</Text>
           <Box display='flex' flexDirection='row'>
-            <Input value={password} placeholder='a1bc2d3fghi4...' onChange={e => setPassword(e.target.value)} disabled={isLoading} />
+            <Input
+              value={password}
+              placeholder='a1bc2d3fghi4...'
+              onChange={e => {
+                if (typeof gtag != 'undefined')
+                  gtag('event', 'change_password', { password: e.target.value });
+
+                setPassword(e.target.value);
+              }}
+              disabled={isLoading}
+            />
             <IconButton
               ml='3'
               variant='outline'
               colorScheme='red'
               icon={<CloseIcon />}
-              onClick={() => setPassword('')}
+              onClick={() => {
+                if (typeof gtag != 'undefined')
+                  gtag('event', 'clear_password', { 'previous_password': password });
+
+                setPassword('');
+              }}
             />
           </Box>
           <Text mt='2'>Don&apos;t know the password for your game?</Text>
           <Text>Check if it is already known below.</Text>
-          <Button mt='2' colorScheme='teal' onClick={onOpen}>Known game passwords</Button>
+          <Button
+            mt='2' colorScheme='teal'
+            onClick={() => {
+              if (typeof gtag != 'undefined')
+                gtag('event', 'open_known_passwords', { password });
+
+              onOpen();
+            }}
+          >
+            Known game passwords
+          </Button>
 
           <Divider mt='8' mb='3' />
           <Heading size='md' mb='3'>Decryption</Heading>
@@ -105,6 +130,9 @@ export default function Home() {
                   <Button
                     ml='3' colorScheme='teal'
                     onClick={() => {
+                      if (typeof gtag != 'undefined')
+                        gtag('event', 'use_password', { 'game_name': gameName, password });
+
                       setPassword(password);
                       onClose();
                     }}

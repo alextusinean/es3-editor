@@ -26,6 +26,16 @@ function isGzip(data) {
   return data[0] == 0x1F && data[1] == 0x8B;
 }
 
+function getJSONParseError(data) {
+  try {
+    JSON.parse(data.toString());
+  } catch (e) {
+    return e;
+  }
+
+  return null;
+}
+
 function isJSON(data) {
   try {
     JSON.parse(data.toString());
@@ -127,6 +137,9 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           disabled={isLoading}
           onChange={changeEvent => {
             const files = changeEvent.target.files;
+            if (typeof gtag != 'undefined')
+              gtag('event', 'pick_file', { 'file_name': files[0] ? files[0].name : '', 'is_encryption': isEncryption, 'should_gzip': shouldGzip });
+
             if (!files.length) {
               setData(null);
               return;
@@ -175,6 +188,9 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           width='100%' mt='2'
           display='block'
           onClick={async () => {
+            if (typeof gtag != 'undefined')
+              gtag('event', 'editor_open');
+            
             if (!data || (!password && !isGzip(data) && !isJSON(data))) {
               toast({
                 title: `Failed ${isEncryption ? 'encrypting' : 'decrypting'} the save file`,
@@ -209,6 +225,12 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
             }
 
             if (!isJSON(decryptedData.cryptedData)) {
+              if (typeof gtag != 'undefined')
+                gtag('event', 'editor_malformed_data', {
+                  'decrypted_data': decryptedData.cryptedData.toString().slice(0, 75),
+                  'parse_error': getJSONParseError(decryptedData.cryptedData).message
+                });
+
               toast({
                 title: 'Can\'t open editor',
                 description: (
@@ -244,6 +266,9 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
         isLoading={isLoading}
         loadingText={`${isEncryption ? 'Encrypting' : 'Decrypting'} the save file...`}
         onClick={async () => {
+          if (typeof gtag != 'undefined')
+            gtag('event', 'download_file', { 'is_encryption': isEncryption, 'should_gzip': shouldGzip });
+
           if (!data || (isEncryption ?  (!password && !shouldGzip) : (!password && !isGzip(data)))) {
             toast({
               title: `Failed ${isEncryption ? 'encrypting' : 'decrypting'} the save file`,
@@ -345,6 +370,9 @@ export default function CryptForm({ isEncryption, isLoading, setIsLoading, passw
           data={editorData}
           setData={setEditorData}
           saveData={async () => {
+            if (typeof gtag != 'undefined')
+              gtag('event', 'editor_save');
+
             let cryptedData;
             try {
               let result = await cryptData(editorData.data, password, true, editorData.wasGunzipped);
