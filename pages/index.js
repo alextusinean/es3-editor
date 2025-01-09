@@ -115,6 +115,7 @@ export default function Home() {
         blockScrollOnMount={false}
         isOpen={isOpen} onClose={onClose}
         scrollBehavior='inside' isCentered
+        size='5xl'
       >
         <ModalOverlay />
         <ModalContent>
