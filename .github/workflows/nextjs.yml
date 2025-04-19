@@ -20,7 +20,7 @@ jobs:
       NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: G-X7X0P5WB4F
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Add ads.txt
         run: echo "google.com, pub-9196711260336425, DIRECT, f08c47fec0942fa0" >> "${{ github.workspace }}/public/ads.txt"
       - name: Detect package manager
@@ -70,7 +70,7 @@ jobs:
       - name: Static HTML export with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next export
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         if: ${{ inputs.should-upload-artifact }}
         with:
           path: ./out
