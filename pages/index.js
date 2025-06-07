@@ -131,6 +131,7 @@ export default function Home() {
                   alignItems="center"
                 >
                   <Code
+                    maxW="80%"
                     whiteSpace='normal'
                     overflowWrap='break-word'
                     wordBreak='break-word'
