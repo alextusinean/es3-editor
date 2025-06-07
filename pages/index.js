@@ -126,7 +126,11 @@ export default function Home() {
               <Box key={index}>
                 {index !== 0 && <Divider my='2' />}
                 <Box display='flex' flexDirection='row' alignItems='center'>
-                  <Code>{password}</Code>
+                  <Code
+                    whiteSpace='normal'
+                    overflowWrap='break-word'
+                    wordBreak='break-word'
+                  >{password}</Code>
                   <Text ml='auto'>{gameName}</Text>
                   <Button
                     ml='3' colorScheme='teal'
