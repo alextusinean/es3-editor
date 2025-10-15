@@ -22,14 +22,11 @@ export default function Footer({ left }) {
           Privacy Policy
         </Link>
       </Box>
+
       <Text mt={1}>
         Forked from{' '}
-        <Link
-          href="https://alex.tusinean.ro"
-          color="blue.500"
-          isExternal
-        >
-          Alex Tușinean's Github
+        <Link href="https://alex.tusinean.ro" color="blue.500" isExternal>
+          Alex Tușinean&rsquo;s GitHub
         </Link>
       </Text>
     </Box>
