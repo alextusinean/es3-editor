@@ -144,7 +144,7 @@ export default function Home() {
               </Box>
             ))}
             <Text mt='5'>Can&apos;t find your game here?</Text>
-            <Text>Try decrypting it without a password.</Text>
+            <Text>Try decrypting it without a password!</Text>
           </ModalBody>
 
           <ModalFooter>
