@@ -1,3 +1,5 @@
+This project is a fork, a maintained one in comparison with the original repo. The ads and all links to the original creator remain, this is just to keep the project running.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
