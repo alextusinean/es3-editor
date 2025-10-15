@@ -28,6 +28,11 @@ export default function Footer({ left }) {
         <Link href="https://alex.tusinean.ro" color="blue.500" isExternal>
           Alex Tușinean&rsquo;s GitHub
         </Link>
+        . Maintained by{' '}
+        <Link href="https://github.com/tofted" color="blue.500" isExternal>
+          Calan Marshall (tofted)
+        </Link>
+        .
       </Text>
     </Box>
   );
