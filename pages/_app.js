@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>EasySave3 Editor</title>
+        <title>New EasySave3 Editor</title>
         <meta property='og:site_name' content='Online EasySave3 Editor' />
         <meta property='og:image' content='https://es3.lol/logo.png' />
         <meta name='keywords'
